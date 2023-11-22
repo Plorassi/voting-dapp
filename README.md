@@ -2,11 +2,11 @@
 
 Team Name: CryptoCrew
 
-Member Name:
-Sesha Sailendra Devanabanda - sdevanab@asu.edu (1224516800)
-Venkata Sai Manoj Pogadadanda - vpogadad@asu.edu (1225606278)
-Bhanuteja Talasila - btalasi1@asu.edu (1224606981)
-Nikhil Pradeep Sonavane - nsonavan@asu.edu (1225623100)
+- Member Name:
+  - Sesha Sailendra Devanabanda - sdevanab@asu.edu (1224516800)
+  - Venkata Sai Manoj Pogadadanda - vpogadad@asu.edu (1225606278)
+  - Bhanuteja Talasila - btalasi1@asu.edu (1224606981)
+  - Nikhil Pradeep Sonavane - nsonavan@asu.edu (1225623100)
 
 Video Demo:\*\*
 insert link here
