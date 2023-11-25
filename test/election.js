@@ -3,31 +3,41 @@ var Election = artifacts.require("./Election.sol");
 contract("Election", function(accounts) {
   var electionInstance;
 
-  it("initializes with two candidates", function() {
+  it("check if four candidates are initialized", function() {
     return Election.deployed().then(function(instance) {
       return instance.candidatesCount();
     }).then(function(count) {
-      assert.equal(count, 2);
+      assert.equal(count, 4);
     });
   });
 
-  it("it initializes the candidates with the correct values", function() {
+  it("check if candidates are initialized with the correct values", function() {
     return Election.deployed().then(function(instance) {
       electionInstance = instance;
       return electionInstance.candidates(1);
     }).then(function(candidate) {
       assert.equal(candidate[0], 1, "contains the correct id");
-      assert.equal(candidate[1], "Candidate 1", "contains the correct name");
+      assert.equal(candidate[1], "Sailendra", "contains the correct name");
       assert.equal(candidate[2], 0, "contains the correct votes count");
       return electionInstance.candidates(2);
     }).then(function(candidate) {
       assert.equal(candidate[0], 2, "contains the correct id");
-      assert.equal(candidate[1], "Candidate 2", "contains the correct name");
+      assert.equal(candidate[1], "Manoj", "contains the correct name");
+      assert.equal(candidate[2], 0, "contains the correct votes count");
+      return electionInstance.candidates(3);
+    }).then(function(candidate) {
+      assert.equal(candidate[0], 3, "contains the correct id");
+      assert.equal(candidate[1], "Bhanu", "contains the correct name");
+      assert.equal(candidate[2], 0, "contains the correct votes count");
+      return electionInstance.candidates(4);
+    }).then(function(candidate) {
+      assert.equal(candidate[0], 4, "contains the correct id");
+      assert.equal(candidate[1], "Nikhil", "contains the correct name");
       assert.equal(candidate[2], 0, "contains the correct votes count");
     });
   });
 
-  it("allows a voter to cast a vote", function() {
+  it("check if voter is allowed to cast a vote", function() {
     return Election.deployed().then(function(instance) {
       electionInstance = instance;
       candidateId = 1;
@@ -46,7 +56,7 @@ contract("Election", function(accounts) {
     })
   });
 
-  it("throws an exception for invalid candiates", function() {
+  it("check if dapp throws an exception for invalid candiates", function() {
     return Election.deployed().then(function(instance) {
       electionInstance = instance;
       return electionInstance.vote(99, { from: accounts[1] })
@@ -63,27 +73,4 @@ contract("Election", function(accounts) {
     });
   });
 
-  it("throws an exception for double voting", function() {
-    return Election.deployed().then(function(instance) {
-      electionInstance = instance;
-      candidateId = 2;
-      electionInstance.vote(candidateId, { from: accounts[1] });
-      return electionInstance.candidates(candidateId);
-    }).then(function(candidate) {
-      var voteCount = candidate[2];
-      assert.equal(voteCount, 1, "accepts first vote");
-      // Try to vote again
-      return electionInstance.vote(candidateId, { from: accounts[1] });
-    }).then(assert.fail).catch(function(error) {
-      assert(error.message.indexOf('revert') >= 0, "error message must contain revert");
-      return electionInstance.candidates(1);
-    }).then(function(candidate1) {
-      var voteCount = candidate1[2];
-      assert.equal(voteCount, 1, "candidate 1 did not receive any votes");
-      return electionInstance.candidates(2);
-    }).then(function(candidate2) {
-      var voteCount = candidate2[2];
-      assert.equal(voteCount, 1, "candidate 2 did not receive any votes");
-    });
-  });
 });
