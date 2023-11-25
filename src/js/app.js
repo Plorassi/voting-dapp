@@ -1,7 +1,7 @@
 App = {
   web3Provider: null,
   contracts: {},
-  account: "0x0",
+  account: '0x0',
   hasVoted: false,
 
   init: function () {
@@ -9,7 +9,9 @@ App = {
   },
 
   initWeb3: function () {
-    if (typeof web3 !== "undefined") {
+    // TODO: refactor conditional
+    if (typeof web3 !== 'undefined') {
+      // If a web3 instance is already provided by Meta Mask.
       const ethEnabled = () => {
         if (window.ethereum) {
           window.web3 = new Web3(window.ethereum);
@@ -19,14 +21,15 @@ App = {
       };
       if (!ethEnabled()) {
         alert(
-          "Please install an Ethereum-compatible browser or extension like MetaMask to use this dApp!"
+          'Please install an Ethereum-compatible browser or extension like MetaMask to use this dApp!'
         );
       }
       web3 = window.web3;
       App.web3Provider = web3.currentProvider;
     } else {
+      // Specify default instance if no web3 instance provided
       App.web3Provider = new Web3.providers.HttpProvider(
-        "http://localhost:7545"
+        'http://localhost:7545'
       );
       web3 = new Web3(App.web3Provider);
     }
@@ -34,8 +37,10 @@ App = {
   },
 
   initContract: function () {
-    $.getJSON("Election.json", function (election) {
+    $.getJSON('Election.json', function (election) {
+      // Instantiate a new truffle contract from the artifact
       App.contracts.Election = TruffleContract(election);
+      // Connect provider to interact with contract
       App.contracts.Election.setProvider(App.web3Provider);
 
       App.listenForEvents();
@@ -44,18 +49,23 @@ App = {
     });
   },
 
+  // Listen for events emitted from the contract
   listenForEvents: function () {
     App.contracts.Election.deployed().then(function (instance) {
+      // Restart Chrome if you are unable to receive this event
+      // This is a known issue with Metamask
+      // https://github.com/MetaMask/metamask-extension/issues/2393
       instance
         .votedEvent(
           {},
           {
             fromBlock: 0,
-            toBlock: "latest",
+            toBlock: 'latest',
           }
         )
         .watch(function (error, event) {
-          console.log("event triggered", event);
+          console.log('event triggered', event);
+          // Reload when a new vote is recorded
           App.render();
         });
     });
@@ -63,26 +73,29 @@ App = {
 
   render: async () => {
     var electionInstance;
-    var loader = $("#loader");
-    var content = $("#content");
-    var results = $("#resultsBlock");
+    var loader = $('#loader');
+    var content = $('#content');
+    var results = $('#resultsBlock');
 
     loader.show();
     content.hide();
     results.hide();
 
+    // Load account data
     try {
       const accounts = await window.ethereum.request({
-        method: "eth_requestAccounts",
+        method: 'eth_requestAccounts',
       });
       App.account = accounts[0];
-      $("#accountAddress").html("Your Account: " + App.account);
+      $('#accountAddress').html('Account Address: ' + App.account);
     } catch (error) {
       if (error.code === 4001) {
+        // User rejected request
       }
       console.log(error);
     }
 
+    // Load contract data
     App.contracts.Election.deployed()
       .then(function (instance) {
         electionInstance = instance;
@@ -95,10 +108,10 @@ App = {
         }
 
         const candidates = await Promise.all(promise);
-        var candidatesResults = $("#candidatesResults");
+        var candidatesResults = $('#candidatesResults');
         candidatesResults.empty();
 
-        var candidatesSelect = $("#candidatesSelect");
+        var candidatesSelect = $('#candidatesSelect');
         candidatesSelect.empty();
 
         for (var i = 0; i < candidatesCount; i++) {
@@ -106,18 +119,20 @@ App = {
           var name = candidates[i][1];
           var voteCount = candidates[i][2];
 
+          // Render candidate Result
           var candidateTemplate =
-            "<tr><th>" +
+            '<tr><th>' +
             id +
-            "</th><td>" +
+            '</th><td>' +
             name +
-            "</td><td>" +
+            '</td><td>' +
             voteCount +
-            "</td></tr>";
+            '</td></tr>';
           candidatesResults.append(candidateTemplate);
 
+          // Render candidate ballot option
           var candidateOption =
-            "<option value='" + id + "' >" + name + "</ option>";
+            "<option value='" + id + "' >" + name + '</ option>';
           candidatesSelect.append(candidateOption);
         }
         return electionInstance.voters(App.account);
@@ -125,7 +140,7 @@ App = {
       .then(function (hasVoted) {
         // Do not allow a user to vote
         if (hasVoted) {
-          $("form").hide();
+          $('form').hide();
           results.show();
         }
         loader.hide();
@@ -137,15 +152,16 @@ App = {
   },
 
   castVote: function () {
-    var candidateId = $("#candidatesSelect").val();
+    var candidateId = $('#candidatesSelect').val();
     App.contracts.Election.deployed()
       .then(function (instance) {
         return instance.vote(candidateId, { from: App.account });
       })
       .then(function (result) {
-        $("#content").hide();
-        $("#loader").show();
-        $(".resultsButton").hide();
+        // Wait for votes to update
+        $('#content').hide();
+        $('#loader').show();
+        $('.resultsButton').hide();
       })
       .catch(function (err) {
         console.error(err);
@@ -160,7 +176,7 @@ $(function () {
 });
 
 document.getElementById("returnButton").addEventListener("click", function () {
-  window.location.href = "index.html";
+  window.location.href = "index.html"; // Redirect to the index page
 });
 
 document.getElementById("resultsButton").addEventListener("click", function () {

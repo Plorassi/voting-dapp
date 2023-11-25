@@ -31,11 +31,12 @@
     <div class="container" style="width: 650px">
       <div class="row">
         <div class="col-lg-12">
-          <h1 class="text-center">Ballot Box</h1>
+          <h1 class="text-center">Blockchain Ballot: Secure Your Vote</h1>
           <hr />
           <br />
           <div id="loader" class="loader"></div>
           <div id="content" style="display: none">
+            <p id="accountAddress" class="text-center"></p>
             <form onSubmit="App.castVote(); return false;">
               <div class="form-group">
                 <label for="candidatesSelect">Select Candidate</label>
@@ -44,7 +45,6 @@
               <button type="submit" class="btn btn-primary">Vote</button>
               <hr />
             </form>
-            <p id="accountAddress" class="text-center"></p>
             <div class="text-center">
               <button id="returnButton" class="btn btn-primary">
                 Return to Home Page
