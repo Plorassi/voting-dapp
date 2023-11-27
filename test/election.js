@@ -1,8 +1,11 @@
 var Election = artifacts.require("./Election.sol");
 
 contract("Election", function(accounts) {
+
+  // variable defined for local testing deployed instance of Election smart contract
   var electionInstance;
 
+  // Test case 1: To check if the constructor ran properly
   it("check if four candidates are initialized", function() {
     return Election.deployed().then(function(instance) {
       return instance.candidatesCount();
@@ -11,6 +14,8 @@ contract("Election", function(accounts) {
     });
   });
 
+
+  // To check if candidates are intialized with correct values
   it("check if candidates are initialized with the correct values", function() {
     return Election.deployed().then(function(instance) {
       electionInstance = instance;
@@ -37,6 +42,8 @@ contract("Election", function(accounts) {
     });
   });
 
+
+  // To check if voter is allowed to cast a vote
   it("check if voter is allowed to cast a vote", function() {
     return Election.deployed().then(function(instance) {
       electionInstance = instance;
@@ -56,6 +63,8 @@ contract("Election", function(accounts) {
     })
   });
 
+
+  // To check if dapp throws an exception for invalid candidates
   it("check if dapp throws an exception for invalid candiates", function() {
     return Election.deployed().then(function(instance) {
       electionInstance = instance;
