@@ -8,8 +8,7 @@ Team Name: CryptoCrew
   - Bhanuteja Talasila - btalasi1@asu.edu (1224606981)
   - Nikhil Pradeep Sonavane - nsonavan@asu.edu (1225623100)
 
-Video Demo:\*\*
-insert link here
+Video Demo:https://www.youtube.com/watch?v=_uxskoubotI
 
 ## Dependencies
 
